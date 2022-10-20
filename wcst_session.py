@@ -40,6 +40,9 @@ class WcstSession:
         self.start_new_session()
     
     def start_new_session(self):
+        """
+        Starts a new session of WCST, wipes any history or tracking
+        """
         self.card_iterator = iter(self.card_generator)
         self.rule_iterator = iter(self.rule_generator)
         
@@ -59,6 +62,11 @@ class WcstSession:
 
 
     def get_cards(self):
+        """
+        Get the cards to display for trial
+        Returns: np array of 4 x 3, for num_cards x num_dimensions, each element
+            is feature index corresponding to FEATURE_NAMES constant
+        """
         if not self.generated_cards_for_trial:
             self.current_cards = next(self.card_generator)
             self.generated_cards_for_trial = True
@@ -70,7 +78,14 @@ class WcstSession:
 
     def make_selection(self, selection):
         """
-        returns tuple (outcome, reward)
+        Makes a selection of a card, logs information about the trial,
+        checks whether to update the rule/block, moves on to next trial. 
+
+        Args:
+            selection: int of 0, 1, 2, 3. Index of card 
+        Returns:
+            (outcome, reward), where outcome is bool for Correct/Incorrect, reward is
+            amount of reward received. 
         """
         if self.current_cards is None:
             raise ValueError("No current cards on screen, call get_cards() first")
@@ -101,8 +116,7 @@ class WcstSession:
 
     def _log_trial(self):
         """
-        TrialNumber, BlockNumber, TrialAfterRuleChange, Response, ItemChosen, CurrentRule, Reward, 
-        Item<Idx><Dim>
+        Helper func to log trial information in history
         """
         row = {
             "TrialNumber": self.current_trial,
@@ -120,6 +134,9 @@ class WcstSession:
 
 
     def dump_history(self):
+        """
+        Creates a dataframe of current history in session, 
+        """
         return pd.DataFrame(self.history)
 
 
