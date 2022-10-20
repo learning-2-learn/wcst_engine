@@ -1,7 +1,11 @@
 import numpy as np
 
 class RandomRuleGenerator:
-    def __init__(self, seed=42):
+    """
+    An iterable to just generate a random int from 0 - 11 indicating
+    which feature should be the next rule
+    """
+    def __init__(self, seed):
         self.rng = np.random.default_rng(seed)
 
     def __iter__(self):
@@ -9,6 +13,6 @@ class RandomRuleGenerator:
 
     def __next__(self): 
         """
-        randomly generates np array of 4 x 3, each element being 0, 1, 2, or 3
+        randomly generates integer from 0 - 11
         """
-        return rng.integers(0, 12, 1)[0]
+        return self.rng.integers(0, 12, 1)[0]
