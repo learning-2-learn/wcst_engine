@@ -27,6 +27,7 @@ A task engine to evaluate artificial learning agents and learning strategies on 
 
 
 ## Usage
+See `test_wcst_session.ipynb` notebook for full demo of usage
 
 ```
 from wcst_session import WcstSession
