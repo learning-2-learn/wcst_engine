@@ -15,7 +15,7 @@ def monkey_condition(block_perf_history):
         return False
     if np.all(block_perf_history[-8:]):
         return True
-    len_to_check = np.min(block_len, 20)
+    len_to_check = np.min([block_len, 20])
     if np.count_nonzero(block_perf_history[-len_to_check:]) >=16:
         return True
     return False
@@ -30,7 +30,7 @@ def human_condition(block_perf_history):
         return False
     if np.all(block_perf_history[-5:]):
         return True
-    len_to_check = np.min(block_len, 10)
+    len_to_check = np.min([block_len, 10])
     if np.count_nonzero(block_perf_history[-len_to_check:]) >=8:
         return True
     return False
