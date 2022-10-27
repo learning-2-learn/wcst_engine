@@ -7,6 +7,7 @@ class RandomRuleGenerator:
     """
     def __init__(self, seed):
         self.rng = np.random.default_rng(seed)
+        self.rule = self.rng.integers(0, 12, 1)[0]
 
     def __iter__(self):
         return self
@@ -15,4 +16,8 @@ class RandomRuleGenerator:
         """
         randomly generates integer from 0 - 11
         """
-        return self.rng.integers(0, 12, 1)[0]
+        features = np.arange(12)
+        features = features[features!=self.rule]
+        self.rule = self.rng.choice(features)
+        
+        return self.rule
