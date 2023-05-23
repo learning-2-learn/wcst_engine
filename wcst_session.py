@@ -18,6 +18,7 @@ class WcstSession:
         card_generator=None,
         rule_generator=None,
         block_switching_condition=monkey_condition,
+        enforce_min_block_len=True,
         random_seed=None,
     ):
         """
@@ -28,11 +29,14 @@ class WcstSession:
             rule_generator: iterable to generate new rule per block, defaults to a random generator
             block_switching_condition: function that specifies conditions needed to be satisfied 
                 for block switching. Func takes in bool array of performance hist in block, outputs bool
+            enforce_min_block_len: bool indicating whether block switching can occur only if a minimum number of 
+                trials have occured in that block. If False, it will count trials to criterion even with no trials in the block.
             random seed: seed used to initialize random generators 
         """
         self.correct_value = correct_value
         self.incorrect_value = incorrect_value
         self.block_switching_condition = block_switching_condition
+        self.enforce_min_block_len = enforce_min_block_len
 
         self.card_generator = card_generator if card_generator else RandomCardGenerator(random_seed)
         self.rule_generator = rule_generator if rule_generator else RandomRuleGenerator(random_seed)
@@ -101,7 +105,8 @@ class WcstSession:
         self._log_trial()
 
         if self.block_switching_condition(np.array(self.block_perf)):
-            self.block_perf = []
+            if self.enforce_min_block_len:
+                self.block_perf = []
             self.current_block += 1
             self.current_rule = next(self.rule_iterator)
             self.trial_in_block = 0
