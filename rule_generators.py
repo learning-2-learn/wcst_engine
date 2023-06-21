@@ -8,10 +8,17 @@ class RandomRuleGeneratorMonkey:
     It follows statistics from the monkey version of the task,
     where there's 50 50 chance of an intra vs extra dimensional shift
     """
-    def __init__(self, seed):
+    def __init__(self, seed, num_rules=12, num_dims=3):
         self.rng = np.random.default_rng(seed)
-        self.rule = self.rng.integers(0, 12, 1)[0]
-        self.dimension = self.rule // 4
+        self.num_rules = num_rules
+        self.num_dims = num_dims
+        if not num_rules % num_dims == 0:
+            raise ValueError(f"number of rules {num_rules} not divisible by number of dimensions {num_dims}")
+        self.num_rules_per_dim = num_rules // num_dims
+
+        self.rule = self.rng.integers(0, num_rules, 1)[0]
+        self.dimension = self.rule // self.num_rules_per_dim
+
 
     def __iter__(self):
         return self
@@ -27,12 +34,12 @@ class RandomRuleGeneratorMonkey:
         if shift_type==0:
             self.dimension = self.dimension
         else:
-            dimensions = np.arange(3)
+            dimensions = np.arange(self.num_dims)
             dimensions = dimensions[dimensions!=self.dimension]
             self.dimension = self.rng.choice(dimensions)
 
-        features = np.arange(12)
-        features = features[features//4==self.dimension]
+        features = np.arange(self.num_rules)
+        features = features[features//self.num_rules_per_dim==self.dimension]
         features = features[features!=self.rule]
         self.rule = self.rng.choice(features)
         
@@ -46,9 +53,11 @@ class RandomRuleGeneratorHuman:
 
     It follows statistics from the human version of the task
     """
-    def __init__(self, seed):
+    def __init__(self, seed, num_rules=12, num_dims=3):
         self.rng = np.random.default_rng(seed)
-        self.rule = self.rng.integers(0, 12, 1)[0]
+        self.rule = self.rng.integers(0, num_rules, 1)[0]
+        self.num_rules=num_rules
+        self.num_dims=num_dims
 
     def __iter__(self):
         return self
@@ -57,7 +66,7 @@ class RandomRuleGeneratorHuman:
         """
         randomly generates integer from 0 - 11
         """
-        features = np.arange(12)
+        features = np.arange(self.num_rules)
         features = features[features!=self.rule]
         self.rule = self.rng.choice(features)
         
