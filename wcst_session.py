@@ -3,7 +3,7 @@ import pandas as pd
 
 from block_switching_conditions import monkey_condition
 from card_generators import RandomCardGenerator
-from rule_generators import RandomRuleGenerator
+from rule_generators import RandomRuleGeneratorMonkey
 from constants import FEATURE_NAMES, DIM_NAMES
 
 
@@ -39,7 +39,7 @@ class WcstSession:
         self.enforce_min_block_len = enforce_min_block_len
 
         self.card_generator = card_generator if card_generator else RandomCardGenerator(random_seed)
-        self.rule_generator = rule_generator if rule_generator else RandomRuleGenerator(random_seed)
+        self.rule_generator = rule_generator if rule_generator else RandomRuleGeneratorMonkey(random_seed)
         
         self.start_new_session()
     

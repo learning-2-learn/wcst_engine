@@ -1,6 +1,6 @@
 import numpy as np
 
-class RandomRuleGenerator:
+class RandomRuleGeneratorMonkey:
     """
     An iterable to just generate a random int from 0 - 11 indicating
     which feature should be the next rule
