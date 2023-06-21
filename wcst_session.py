@@ -3,7 +3,7 @@ import pandas as pd
 
 from block_switching_conditions import monkey_condition
 from card_generators import RandomCardGenerator
-from rule_generators import RandomRuleGenerator
+from rule_generators import RandomRuleGeneratorMonkey
 from constants import FEATURE_NAMES, DIM_NAMES
 
 
@@ -20,6 +20,8 @@ class WcstSession:
         block_switching_condition=monkey_condition,
         enforce_min_block_len=True,
         random_seed=None,
+        feature_names=FEATURE_NAMES,
+        dim_names=DIM_NAMES,
     ):
         """
         Args:
@@ -39,7 +41,18 @@ class WcstSession:
         self.enforce_min_block_len = enforce_min_block_len
 
         self.card_generator = card_generator if card_generator else RandomCardGenerator(random_seed)
-        self.rule_generator = rule_generator if rule_generator else RandomRuleGenerator(random_seed)
+        self.rule_generator = rule_generator if rule_generator else RandomRuleGeneratorMonkey(random_seed)
+
+        self.feature_names=feature_names
+        self.dim_names=dim_names
+
+        # check num cards, num feature dims, num features, num_rules per card all match up, 
+        if not (
+            len(feature_names) == self.rule_generator.num_rules and 
+            len(dim_names) == self.card_generator.num_dims and 
+            self.rule_generator.num_rules == self.card_generator.num_dims * self.card_generator.num_cards
+        ): 
+            raise ValueError("Lengths of feature and dimensions in rule generator, card generators, and names do not match up")
         
         self.start_new_session()
     
@@ -77,7 +90,7 @@ class WcstSession:
         return self.current_cards
 
     def get_cards_text(self):
-        return FEATURE_NAMES[self.get_cards()]
+        return self.feature_names[self.get_cards()]
 
 
     def make_selection(self, selection):
@@ -129,11 +142,11 @@ class WcstSession:
             "TrialAfterRuleChange": self.trial_in_block,
             "Response": "Correct" if self.is_correct else "Incorrect",
             "ItemChosen": self.current_selection,
-            "CurrentRule": FEATURE_NAMES[self.current_rule],
+            "CurrentRule": self.feature_names[self.current_rule],
             "Reward": self.trial_reward,
         }
-        for card_idx, card in enumerate(FEATURE_NAMES[self.current_cards]):
-            for dim_idx, dim in enumerate(DIM_NAMES):
+        for card_idx, card in enumerate(self.feature_names[self.current_cards]):
+            for dim_idx, dim in enumerate(self.dim_names):
                 row[f"Item{card_idx}{dim}"] = card[dim_idx]
         self.history.append(row)
 
@@ -146,4 +159,4 @@ class WcstSession:
 
 
     def get_current_rule_text(self):
-        return FEATURE_NAMES[self.current_rule]
+        return self.feature_names[self.current_rule]
