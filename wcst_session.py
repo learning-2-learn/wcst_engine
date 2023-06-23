@@ -81,7 +81,7 @@ class WcstSession:
     def get_cards(self):
         """
         Get the cards to display for trial
-        Returns: np array of 4 x 3, for num_cards x num_dimensions, each element
+        Returns: np array of num_cards x num_dimensions, each element
             is feature index corresponding to FEATURE_NAMES constant
         """
         if not self.generated_cards_for_trial:
