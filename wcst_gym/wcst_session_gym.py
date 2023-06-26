@@ -24,7 +24,7 @@ class WcstSessionGym(gym.Env):
         """
         return {"current_rule": self.session.current_rule}
 
-    def reset(self, seed):
+    def reset(self, seed=None, options=None):
         self.session.start_new_session()
         return self._get_obs(), self._get_info()
 
