@@ -8,12 +8,12 @@ class WcstSessionGym(gym.Env):
 
     def __init__(self, wcst_session):
         self.session = wcst_session
-        num_cards = wcst_session.card_generator.num_cards
-        num_dims = wcst_session.card_generator.num_dims
-        num_features = wcst_session.rule_generator.num_rules
-        card_shapes = np.ones((num_cards, num_dims)) * num_features
+        self.num_cards = wcst_session.card_generator.num_cards
+        self.num_dims = wcst_session.card_generator.num_dims
+        self.num_features = wcst_session.rule_generator.num_rules
+        card_shapes = np.ones((self.num_cards, self.num_dims)) * self.num_features
         self.observation_space = spaces.MultiDiscrete(card_shapes)
-        self.action_space = spaces.Discrete(num_cards)
+        self.action_space = spaces.Discrete(self.num_cards)
 
     def _get_obs(self):
         return self.session.get_cards()
