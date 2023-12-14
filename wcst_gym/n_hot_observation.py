@@ -15,10 +15,10 @@ class NHotObservation(gym.ObservationWrapper, gym.utils.RecordConstructorArgs):
             env: The environment to apply the wrapper
         """
         gym.utils.RecordConstructorArgs.__init__(self)
-        self.num_cards = wcst_env.num_cards
-        self.num_features = wcst_env.num_features
+        self.num_cards = wcst_env.unwrapped.num_cards
+        self.num_features = wcst_env.unwrapped.num_features
         gym.ObservationWrapper.__init__(self, wcst_env)
-        self.observation_space = spaces.MultiBinary([wcst_env.num_cards, wcst_env.num_features])
+        self.observation_space = spaces.MultiBinary([self.num_cards, self.num_features])
 
     def observation(self, observation):
         """Converts a cards observation to a N-hot encoding of cards, 
