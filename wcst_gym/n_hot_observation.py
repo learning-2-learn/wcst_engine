@@ -15,9 +15,9 @@ class NHotObservation(gym.ObservationWrapper, gym.utils.RecordConstructorArgs):
             env: The environment to apply the wrapper
         """
         gym.utils.RecordConstructorArgs.__init__(self)
+        gym.ObservationWrapper.__init__(self, wcst_env)
         self.num_cards = wcst_env.unwrapped.num_cards
         self.num_features = wcst_env.unwrapped.num_features
-        gym.ObservationWrapper.__init__(self, wcst_env)
         self.observation_space = spaces.MultiBinary([self.num_cards, self.num_features])
 
     def observation(self, observation):
@@ -30,7 +30,8 @@ class NHotObservation(gym.ObservationWrapper, gym.utils.RecordConstructorArgs):
         Returns:
             An num_dimensions-hot encoding of cards
         """
-        n_hot = np.zeros((self.num_cards, self.num_features))
+        # set type to int8 because that is the type for MultiBinary space
+        n_hot = np.zeros((self.num_cards, self.num_features), dtype='int8')
         for card_idx in range(self.num_cards):
             feature_idxs = observation[card_idx, :]
             n_hot[card_idx, feature_idxs] = 1
