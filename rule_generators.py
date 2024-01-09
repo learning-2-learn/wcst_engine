@@ -71,3 +71,17 @@ class RandomRuleGeneratorHuman:
         self.rule = self.rng.choice(features)
         
         return self.rule
+    
+class ConstantRuleGenerator:
+    """
+    A rule generator which only ever stays on the same rule, that's specified on initialization
+    """
+    def __init__(self, num_rules, rule):
+        self.num_rules = num_rules
+        self.rule = rule
+
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        return self.rule
