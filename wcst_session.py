@@ -17,6 +17,7 @@ class WcstSession:
         incorrect_value, 
         card_generator=None,
         rule_generator=None,
+        prob_reward_matches=None,
         block_switching_condition=monkey_condition,
         enforce_min_block_len=True,
         random_seed=None,
@@ -39,9 +40,11 @@ class WcstSession:
         self.incorrect_value = incorrect_value
         self.block_switching_condition = block_switching_condition
         self.enforce_min_block_len = enforce_min_block_len
+        self.prob_reward_matches = prob_reward_matches
 
         self.card_generator = card_generator if card_generator else RandomCardGenerator(random_seed)
         self.rule_generator = rule_generator if rule_generator else RandomRuleGeneratorMonkey(random_seed)
+        self.rng = np.random.default_rng(random_seed)
 
         self.feature_names=feature_names
         self.dim_names=dim_names
@@ -109,7 +112,16 @@ class WcstSession:
         self.current_selection = selection
         card = self.current_cards[selection]
         is_correct = self.current_rule in card
-        value = self.correct_value if is_correct else self.incorrect_value
+        if self.prob_reward_matches is None: 
+            value = self.correct_value if is_correct else self.incorrect_value
+        else:
+            # find associated probabilities for correct, incorrect, randomly make a choice
+            # based on those probs. 
+            if is_correct:
+                probs = [self.prob_reward_matches, 1 - self.prob_reward_matches]
+            else:
+                probs = [1 - self.prob_reward_matches, self.prob_reward_matches]
+            value = self.rng.choice([self.correct_value, self.incorrect_value], p=probs)
         self.block_perf.append(is_correct)
         self.is_correct = is_correct
         self.trial_reward = value
