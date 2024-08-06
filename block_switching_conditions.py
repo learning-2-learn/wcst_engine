@@ -46,3 +46,13 @@ def short_condition(block_perf_history):
     if np.all(block_perf_history[-3:]):
         return True
     return False
+
+def create_bernoulli_condition(prob_stay):
+    """
+    Returns a function that switches (or stays on) blocks based on a fixed probability. 
+    """
+    def bernoulli_condition(block_perf_history):
+        rng = np.random.default_rng()
+        should_switch = rng.choice([True, False], p=[1 - prob_stay, prob_stay])
+        return should_switch
+    return bernoulli_condition
