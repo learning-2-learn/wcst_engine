@@ -23,6 +23,7 @@ class WcstSession:
         random_seed=None,
         feature_names=FEATURE_NAMES,
         dim_names=DIM_NAMES,
+        should_log_trials=True,
     ):
         """
         Args:
@@ -41,6 +42,7 @@ class WcstSession:
         self.block_switching_condition = block_switching_condition
         self.enforce_min_block_len = enforce_min_block_len
         self.prob_reward_matches = prob_reward_matches
+        self.should_log_trials = should_log_trials
 
         self.card_generator = card_generator if card_generator else RandomCardGenerator(random_seed)
         self.rule_generator = rule_generator if rule_generator else RandomRuleGeneratorMonkey(random_seed)
@@ -126,8 +128,9 @@ class WcstSession:
         self.is_correct = is_correct
         self.trial_reward = value
         self.total_rewards += value
-
-        self._log_trial()
+        
+        if self.should_log_trials:
+            self._log_trial()
 
         if self.block_switching_condition(np.array(self.block_perf)):
             if self.enforce_min_block_len:
