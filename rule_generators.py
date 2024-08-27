@@ -72,6 +72,29 @@ class RandomRuleGeneratorHuman:
         
         return self.rule
     
+class RandomRuleGeneratorValidRules:
+    """
+    An iterable to just generate a random int from the list of valid rules you give it. 
+    It follows statistics from the human version of the task
+    """
+    def __init__(self, seed, valid_rules, num_rules=12, num_dims=3):
+        self.rng = np.random.default_rng(seed)
+        self.valid_rules = valid_rules
+        self.rule = self.rng.choice(self.valid_rules)
+        self.num_rules=num_rules
+        self.num_dims=num_dims
+
+    def __iter__(self):
+        return self
+
+    def __next__(self): 
+        """
+        randomly generates integer from 0 - 11
+        """
+        next_possible_rules = self.valid_rules[self.valid_rules!=self.rule]
+        self.rule = self.rng.choice(next_possible_rules)
+        return self.rule
+    
 class ConstantRuleGenerator:
     """
     A rule generator which only ever stays on the same rule, that's specified on initialization
