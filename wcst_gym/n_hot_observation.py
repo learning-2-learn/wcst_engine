@@ -32,7 +32,8 @@ class NHotObservation(gym.ObservationWrapper, gym.utils.RecordConstructorArgs):
         """
         # set type to int8 because that is the type for MultiBinary space
         n_hot = np.zeros((self.num_cards, self.num_features), dtype='int8')
-        for card_idx in range(self.num_cards):
-            feature_idxs = observation[card_idx, :]
-            n_hot[card_idx, feature_idxs] = 1
+        n_hot[np.arange(self.num_cards)[:, np.newaxis], observation] = 1
+        # for card_idx in range(self.num_cards):
+        #     feature_idxs = observation[card_idx, :]
+        #     n_hot[card_idx, feature_idxs] = 1
         return n_hot
