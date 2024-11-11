@@ -54,3 +54,27 @@ class RandomCardGenerator:
 #             self.rng.shuffle(dim_vals)
 #             dim_cols.append(dim_vals)
 #         return np.hstack(dim_cols)
+
+class RandomCardGeneratorNoDims:
+    """
+    Still gives back n cards with n features each, but 
+    can be any features (no dimensional divide)
+    """
+    def __init__(self, seed, num_cards=4, num_dims=3):
+        self.rng = np.random.default_rng(seed)
+        self.num_cards = num_cards
+        self.num_dims = num_dims
+
+    def __iter__(self):
+        return self
+
+    def __next__(self): 
+        """
+        randomly generates np array of num_cards x num_dims, each element being an int from 0 - num_features
+        indicating the feature idx. 
+        """
+        feats = np.arange(self.num_cards * self.num_dims)
+        self.rng.shuffle(feats)
+        cards = np.split(feats, self.num_cards)
+        return np.vstack(cards)
+    
